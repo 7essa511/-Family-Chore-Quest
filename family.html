@@ -1,0 +1,212 @@
+<!DOCTYPE html><!DOCTYPE html>
+<html>
+<head>
+    <title>Chore Quest 🚀</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            font-family: 'Quicksand', sans-serif; 
+            margin: 0; padding: 20px; 
+            display: flex; flex-direction: column; align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(-45deg, #4D96FF, #9B6BFF, #FF85B3, #6BCB77);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: "🚀 ⭐ ☁️ 🎮 🎈 🍕 🍦 🧸 🎨 🛹 🪐 🚀 ⭐ ☁️ 🎮 🎈 🍕 🍦 🧸 🎨 🛹 🪐";
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            font-size: 2.5rem; opacity: 0.12; pointer-events: none;
+            display: flex; flex-wrap: wrap; justify-content: space-around;
+            line-height: 4; z-index: -1; animation: floatUp 30s linear infinite;
+        }
+
+        @keyframes floatUp { from { transform: translateY(0); } to { transform: translateY(-50%); } }
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
+        .nav { display: flex; background: white; border-radius: 25px; margin-bottom: 20px; width: 100%; max-width: 400px; box-shadow: 0 8px 0 rgba(0,0,0,0.1); overflow: hidden; }
+        .tab { flex: 1; padding: 15px; text-align: center; cursor: pointer; font-family: 'Fredoka One'; color: #ccc; transition: 0.3s; }
+        .tab.active { color: #9B6BFF; background: #f9f9f9; }
+        
+        .card { background: white; border-radius: 35px; padding: 20px; width: 90%; max-width: 400px; box-shadow: 0 10px 0 rgba(0,0,0,0.1); margin-bottom: 25px; text-align: center; border: 4px solid #fff; }
+        .pts { font-family: 'Fredoka One'; font-size: 4rem; color: #9B6BFF; margin: 10px 0; }
+        
+        .progress-container { background: #eee; border-radius: 20px; height: 25px; width: 100%; margin: 15px 0; overflow: hidden; border: 2px solid #ddd; }
+        #bar-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #9B6BFF, #FF85B3); transition: 1s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+
+        .btn { border: none; padding: 12px 20px; border-radius: 50px; cursor: pointer; font-family: 'Fredoka One'; color: white; margin: 5px; transition: 0.2s; }
+        .btn-green { background: #6BCB77; box-shadow: 0 6px 0 #4cae5d; }
+        .btn-pink { background: #FF85B3; box-shadow: 0 6px 0 #e66b9a; }
+        .btn-blue { background: #4D96FF; box-shadow: 0 6px 0 #3a7bd5; }
+        .btn-red { background: #FF5E78; box-shadow: 0 6px 0 #d14d62; }
+        .btn:active { transform: translateY(4px); box-shadow: none; }
+        
+        .item { background: white; border-radius: 25px; padding: 15px; margin-bottom: 12px; display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 400px; box-shadow: 0 6px 0 rgba(0,0,0,0.05); }
+        .item-row { display: flex; justify-content: space-between; width: 100%; align-items: center; font-weight: bold; }
+
+        #congrats { 
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 500; 
+            flex-direction: column; align-items: center; justify-content: center; color: white; text-align: center; 
+            background: linear-gradient(45deg, #FF85B3, #9B6BFF, #4D96FF, #6BCB77); background-size: 300% 300%; animation: gradientBG 3s linear infinite; 
+        }
+
+        #camera-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 100; flex-direction: column; align-items: center; justify-content: center; }
+        video { width: 85%; border: 8px solid white; border-radius: 30px; }
+    </style>
+</head>
+<body>
+
+    <div class="nav">
+        <div id="t1" class="tab active" onclick="show('child')">🧒 ME</div>
+        <div id="t2" class="tab" onclick="show('parent')">🔐 PARENT</div>
+    </div>
+
+    <div id="child-view" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+        <div class="card">
+            <h2 style="margin:0; font-family:'Fredoka One'; color:#555">My Points</h2>
+            <div class="pts" id="points-display">0</div>
+            <div class="progress-container"><div id="bar-fill"></div></div>
+            <p id="progress-text" style="font-weight:bold; color:#888;">0 / 500 to IPAD</p>
+        </div>
+
+        <div class="item">
+            <div class="item-row"><span>🛏️ Make Bed (+10)</span> <button class="btn btn-green" onclick="openCam('Bed', 10)">DONE</button></div>
+            <button class="btn btn-blue" style="font-size: 0.8rem; padding: 5px 15px;" onclick="sendMessage('Bed')">💬 Help / Can't do it</button>
+        </div>
+
+        <div class="item">
+            <div class="item-row"><span>📚 Homework (+25)</span> <button class="btn btn-green" onclick="openCam('Homework', 25)">DONE</button></div>
+            <button class="btn btn-blue" style="font-size: 0.8rem; padding: 5px 15px;" onclick="sendMessage('Homework')">💬 Help / Can't do it</button>
+        </div>
+
+        <div class="item">
+            <div class="item-row"><span>🧹 Clean Room (+50)</span> <button class="btn btn-green" onclick="openCam('Room', 50)">DONE</button></div>
+            <button class="btn btn-blue" style="font-size: 0.8rem; padding: 5px 15px;" onclick="sendMessage('Room')">💬 Help / Can't do it</button>
+        </div>
+    </div>
+
+    <div id="parent-view" style="width: 100%; display: none; flex-direction: column; align-items: center;">
+        <h3 style="color:white; font-family:'Fredoka One'; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">Check Proof & Messages</h3>
+        <div id="approval-list" style="width: 100%; display: flex; flex-direction: column; align-items: center;"></div>
+        
+        <h3 style="color:white; font-family:'Fredoka One'; margin-top:20px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">Parent Controls</h3>
+        <div class="card">
+            <p>Grounded? Deduct points:</p>
+            <button class="btn btn-red" onclick="deduct()">-10 POINTS ❌</button>
+        </div>
+    </div>
+
+    <div id="camera-overlay">
+        <video id="video" autoplay playsinline></video>
+        <button class="btn btn-green" style="margin-top:20px; font-size: 1.5rem;" onclick="snap()">📸 SNAP PHOTO</button>
+        <button class="btn" style="background:#555" onclick="closeCam()">CANCEL</button>
+        <canvas id="canvas" style="display:none"></canvas>
+    </div>
+
+    <div id="congrats" onclick="this.style.display='none'">
+        <h1 style="font-family:'Fredoka One'; font-size: 5.5rem; text-shadow: 0 0 30px #fff; margin:0;">CONGRATS!!!!</h1>
+        <p style="font-size: 2rem; font-weight:bold;">Mission Approved! 🎉</p>
+        <div style="font-size: 5rem;">🏆 📱 ✨</div>
+        <p style="margin-top:20px;">Tap anywhere to close</p>
+    </div>
+
+    <script>
+        let data = JSON.parse(localStorage.getItem('chores')) || { pts: 0, pending: [] };
+        let cur = null;
+        const goal = 500;
+        const PARENT_CODE = "1234"; // 🔑 CHANGE THIS TO YOUR SECRET CODE!
+
+        function show(v) {
+            if(v == 'parent') {
+                let code = prompt("Enter the Secret Parent Code:");
+                if(code !== PARENT_CODE) {
+                    alert("Wrong code! Nice try! 😉");
+                    return;
+                }
+            }
+            document.getElementById('child-view').style.display = (v=='child'?'flex':'none');
+            document.getElementById('parent-view').style.display = (v=='parent'?'flex':'none');
+            document.getElementById('t1').classList.toggle('active', v=='child');
+            document.getElementById('t2').classList.toggle('active', v=='parent');
+            render();
+        }
+
+        async function openCam(n, p) {
+            cur = { n, p };
+            try {
+                const s = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+                document.getElementById('video').srcObject = s;
+                document.getElementById('camera-overlay').style.display = 'flex';
+            } catch(e) { alert("Camera error!"); }
+        }
+
+        function closeCam() {
+            document.getElementById('camera-overlay').style.display = 'none';
+            const s = document.getElementById('video').srcObject;
+            if(s) s.getTracks().forEach(t => t.stop());
+        }
+
+        function snap() {
+            const v = document.getElementById('video');
+            const c = document.getElementById('canvas');
+            c.width = v.videoWidth; c.height = v.videoHeight;
+            c.getContext('2d').drawImage(v, 0, 0);
+            data.pending.push({ name: cur.n, pts: cur.p, img: c.toDataURL('image/jpeg'), type: 'photo' });
+            closeCam();
+            save();
+            alert("Sent to Parent!");
+        }
+
+        function sendMessage(choreName) {
+            let msg = prompt("Why can't you do this chore?");
+            if(msg) {
+                data.pending.push({ name: choreName, type: 'message', message: msg });
+                save();
+                alert("Message sent! ✉️");
+            }
+        }
+
+        function approve(i) {
+            if(data.pending[i].type == 'photo') {
+                data.pts += data.pending[i].pts;
+                document.getElementById('congrats').style.display = 'flex';
+            }
+            data.pending.splice(i, 1);
+            save();
+        }
+
+        function deduct() {
+            if(confirm("Deduct 10 points?")) {
+                data.pts = Math.max(0, data.pts - 10);
+                save();
+            }
+        }
+
+        function save() {
+            localStorage.setItem('chores', JSON.stringify(data));
+            render();
+        }
+
+        function render() {
+            document.getElementById('points-display').innerText = data.pts;
+            const percent = Math.min((data.pts / goal) * 100, 100);
+            document.getElementById('bar-fill').style.width = percent + "%";
+            document.getElementById('progress-text').innerText = data.pts + " / 500 to IPAD";
+
+            let h = '';
+            data.pending.forEach((p, i) => {
+                if(p.type == 'photo') {
+                    h += `<div class="card"><b>PHOTO: ${p.name}</b><br><img src="${p.img}" style="width:100%; border-radius:20px; margin:10px 0;"><br><button class="btn btn-pink" onclick="approve(${i})">APPROVE ✅</button></div>`;
+                } else {
+                    h += `<div class="card" style="border-color: #4D96FF;"><b>✉️ HELP: ${p.name}</b><br><p>"${p.message}"</p><button class="btn btn-pink" onclick="approve(${i})">OK</button></div>`;
+                }
+            });
+            document.getElementById('approval-list').innerHTML = h || '<p style="color:white;">Nothing to review</p>';
+        }
+
+        render();
+    </script>
+</body>
+</html>
